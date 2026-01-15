@@ -1,6 +1,7 @@
 package com.example.infinite_xox.game
 
 import com.example.infinite_xox.model.CellState
+import com.example.infinite_xox.model.Move
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -71,5 +72,34 @@ class GameLogicTest {
             CellState.O, CellState.EMPTY, CellState.EMPTY
         )
         assertEquals(listOf(2, 4, 5, 7, 8), gameLogic.getAvailableMoves(board))
+    }
+
+    @Test
+    fun `getOldestMoveIndex returns oldest move index for symbol`() {
+        val moveHistory = listOf(
+            Move(index = 0, symbol = CellState.X, timestamp = 1000L),
+            Move(index = 4, symbol = CellState.O, timestamp = 2000L),
+            Move(index = 2, symbol = CellState.X, timestamp = 3000L)
+        )
+        assertEquals(0, gameLogic.getOldestMoveIndex(moveHistory, CellState.X))
+        assertEquals(4, gameLogic.getOldestMoveIndex(moveHistory, CellState.O))
+    }
+
+    @Test
+    fun `getOldestMoveIndex returns null when no moves for symbol`() {
+        val moveHistory = listOf(
+            Move(index = 0, symbol = CellState.X, timestamp = 1000L)
+        )
+        assertNull(gameLogic.getOldestMoveIndex(moveHistory, CellState.O))
+    }
+
+    @Test
+    fun `isDraw returns false when players have less than max pieces`() {
+        val board = listOf(
+            CellState.X, CellState.O, CellState.EMPTY,
+            CellState.EMPTY, CellState.EMPTY, CellState.EMPTY,
+            CellState.EMPTY, CellState.EMPTY, CellState.EMPTY
+        )
+        assertFalse(gameLogic.isDraw(board, emptyList()))
     }
 }
