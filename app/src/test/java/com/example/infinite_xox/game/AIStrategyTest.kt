@@ -66,4 +66,34 @@ class AIStrategyTest {
         val move = aiStrategy.findWinningMove(board, CellState.O)
         assertNull(move)
     }
+
+    @Test
+    fun `AI should create fork when possible`() {
+        // Board where AI (O) can create a fork
+        val board = listOf(
+            CellState.X, CellState.EMPTY, CellState.O,
+            CellState.EMPTY, CellState.X, CellState.EMPTY,
+            CellState.EMPTY, CellState.EMPTY, CellState.O
+        )
+        val availableMoves = listOf(1, 3, 5, 6, 7)
+        val move = aiStrategy.findBestMove(board, availableMoves)
+        // AI should take position 5 or 6 to create a fork
+        // Position 5: creates fork with row 3-4-5 and column 2-5-8
+        // Position 6: creates fork with column 0-3-6 and diagonal 2-4-6
+        assertTrue(move in listOf(5, 6))
+    }
+
+    @Test
+    fun `AI should block player fork`() {
+        // Board where player (X) could create a fork
+        val board = listOf(
+            CellState.X, CellState.EMPTY, CellState.EMPTY,
+            CellState.EMPTY, CellState.O, CellState.EMPTY,
+            CellState.EMPTY, CellState.EMPTY, CellState.X
+        )
+        val availableMoves = listOf(1, 2, 3, 5, 6, 7)
+        val move = aiStrategy.findBestMove(board, availableMoves)
+        // AI should block by taking a corner or edge to prevent fork
+        assertTrue(move in listOf(1, 2, 3, 5, 6, 7))
+    }
 }

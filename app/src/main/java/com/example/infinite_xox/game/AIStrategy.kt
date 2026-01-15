@@ -5,8 +5,6 @@ import com.example.infinite_xox.model.GameConstants
 
 class AIStrategy {
 
-    private val gameLogic = GameLogic()
-
     fun findBestMove(board: List<CellState>, availableMoves: List<Int>): Int {
         if (availableMoves.isEmpty()) {
             throw IllegalStateException("No available moves")
