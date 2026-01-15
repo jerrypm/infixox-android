@@ -24,9 +24,9 @@ class GameLogic {
     }
 
     fun getOldestMoveIndex(moveHistory: List<Move>, symbol: CellState): Int? {
+        // Return the first matching move (oldest, since moves are added in order)
         return moveHistory
-            .filter { it.symbol == symbol }
-            .minByOrNull { it.timestamp }
+            .firstOrNull { it.symbol == symbol }
             ?.index
     }
 
