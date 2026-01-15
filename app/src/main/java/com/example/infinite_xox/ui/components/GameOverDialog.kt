@@ -1,8 +1,10 @@
 package com.example.infinite_xox.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,70 +40,83 @@ fun GameOverDialog(
         onDismissRequest = { },
         properties = DialogProperties(
             dismissOnBackPress = false,
-            dismissOnClickOutside = false
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false
         )
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.85f)
-                .clip(RoundedCornerShape(20.dp))
-                .background(BgSecondary)
-                .padding(32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = if (isPlayerWinner) "🏆" else "🤖",
-                fontSize = 64.sp
+            // Confetti animation in background
+            ConfettiAnimation(
+                isPlayerWinner = isPlayerWinner,
+                modifier = Modifier.fillMaxSize()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = if (isPlayerWinner) "You Won!" else "AI Won!",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (isPlayerWinner) SuccessColor else DangerColor
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Final Score: $playerScore - $aiScore",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = TextSecondary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = if (isPlayerWinner)
-                    "Congratulations! You've defeated the AI!"
-                else
-                    "The AI was too smart this time. Try again!",
-                fontSize = 14.sp,
-                color = TextSecondary,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = onPlayAgain,
+            // Dialog content
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryColor,
-                    contentColor = TextPrimary
-                )
+                    .fillMaxWidth(0.85f)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(BgSecondary)
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Play Again",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
+                    text = if (isPlayerWinner) "🏆" else "🤖",
+                    fontSize = 64.sp
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = if (isPlayerWinner) "You Won!" else "AI Won!",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isPlayerWinner) SuccessColor else DangerColor
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Final Score: $playerScore - $aiScore",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = TextSecondary
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = if (isPlayerWinner)
+                        "Congratulations! You've defeated the AI!"
+                    else
+                        "The AI was too smart this time. Try again!",
+                    fontSize = 14.sp,
+                    color = TextSecondary,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = onPlayAgain,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PrimaryColor,
+                        contentColor = TextPrimary
+                    )
+                ) {
+                    Text(
+                        text = "Play Again",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
             }
         }
     }
