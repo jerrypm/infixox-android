@@ -7,7 +7,6 @@ import org.junit.Test
 class AIStrategyTest {
 
     private val aiStrategy = AIStrategy()
-    private val gameLogic = GameLogic()
 
     @Test
     fun `AI should win when possible`() {
@@ -16,7 +15,7 @@ class AIStrategyTest {
             CellState.X, CellState.X, CellState.EMPTY,
             CellState.EMPTY, CellState.EMPTY, CellState.EMPTY
         )
-        val availableMoves = gameLogic.getAvailableMoves(board)
+        val availableMoves = board.indices.filter { board[it] == CellState.EMPTY }
         val move = aiStrategy.findBestMove(board, availableMoves)
         assertEquals(2, move)
     }
@@ -28,7 +27,7 @@ class AIStrategyTest {
             CellState.O, CellState.EMPTY, CellState.EMPTY,
             CellState.EMPTY, CellState.EMPTY, CellState.EMPTY
         )
-        val availableMoves = gameLogic.getAvailableMoves(board)
+        val availableMoves = board.indices.filter { board[it] == CellState.EMPTY }
         val move = aiStrategy.findBestMove(board, availableMoves)
         assertEquals(2, move)
     }
@@ -40,7 +39,7 @@ class AIStrategyTest {
             CellState.EMPTY, CellState.EMPTY, CellState.EMPTY,
             CellState.EMPTY, CellState.EMPTY, CellState.EMPTY
         )
-        val availableMoves = gameLogic.getAvailableMoves(board)
+        val availableMoves = board.indices.filter { board[it] == CellState.EMPTY }
         val move = aiStrategy.findBestMove(board, availableMoves)
         assertEquals(4, move)
     }
