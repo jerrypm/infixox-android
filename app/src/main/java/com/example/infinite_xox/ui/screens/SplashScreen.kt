@@ -7,7 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -97,10 +98,11 @@ fun SplashScreen(
         contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo_infixox),
+            painter = painterResource(id = R.drawable.ic_logo_infixox),
             contentDescription = "InfiXOX Logo",
             modifier = Modifier
-                .size(180.dp)
+                .width(280.dp)
+                .height(96.dp)
                 .scale(scale.value)
                 .alpha(alpha.value)
         )
