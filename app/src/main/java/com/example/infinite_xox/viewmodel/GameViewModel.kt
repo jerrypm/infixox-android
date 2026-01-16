@@ -95,21 +95,34 @@ class GameViewModel : ViewModel() {
 
     private fun moveOldestPiece(toIndex: Int, symbol: CellState) {
         val currentState = _gameState.value
-        val oldestIndex = gameLogic.getOldestMoveIndex(currentState.moveHistory, symbol)
-            ?: return
+
+        // Find the oldest move for this symbol (first occurrence in history)
+        val symbolMoves = currentState.moveHistory.filter { it.symbol == symbol }
+        if (symbolMoves.isEmpty()) return
+
+        val oldestMove = symbolMoves.first()
+        val oldestIndex = oldestMove.index
 
         val newBoard = currentState.board.toMutableList()
         newBoard[oldestIndex] = CellState.EMPTY
         newBoard[toIndex] = symbol
 
-        val newHistory = currentState.moveHistory
-            .filter { it.index != oldestIndex || it.symbol != symbol }
-            .plus(Move(index = toIndex, symbol = symbol))
+        // Remove the specific oldest move by matching index, symbol, AND timestamp
+        val newHistory = currentState.moveHistory.toMutableList()
+        val moveIndexToRemove = newHistory.indexOfFirst { move ->
+            move.index == oldestMove.index &&
+                    move.symbol == oldestMove.symbol &&
+                    move.timestamp == oldestMove.timestamp
+        }
+        if (moveIndexToRemove != -1) {
+            newHistory.removeAt(moveIndexToRemove)
+        }
+        newHistory.add(Move(index = toIndex, symbol = symbol))
 
         _gameState.update {
             it.copy(
                 board = newBoard,
-                moveHistory = newHistory,
+                moveHistory = newHistory.toList(),
                 isProcessingMove = true
             )
         }
@@ -152,14 +165,23 @@ class GameViewModel : ViewModel() {
         val aiPieceCount = gameLogic.countSymbols(currentState.board, CellState.O)
         val availableMoves = gameLogic.getAvailableMoves(currentState.board)
 
-        if (availableMoves.isEmpty()) return
-
-        val bestMove = aiStrategy.findBestMove(currentState.board, availableMoves)
-
+        // In infinite tic-tac-toe: move oldest piece to new position when placing 4th piece
         if (aiPieceCount >= GameConstants.MAX_PIECES) {
+            if (availableMoves.isEmpty()) return
+            val bestMove = aiStrategy.findBestMove(currentState.board, availableMoves)
             moveOldestPiece(bestMove, CellState.O)
-        } else {
+        } else if (availableMoves.isNotEmpty()) {
+            // For normal moves (when AI has less than 3 pieces)
+            val bestMove = aiStrategy.findBestMove(currentState.board, availableMoves)
             makeMove(bestMove, CellState.O)
+        } else {
+            // If truly no moves available, just switch turns - don't reset the game
+            _gameState.update {
+                it.copy(
+                    isPlayerTurn = true,
+                    statusMessage = "Your Turn (X)"
+                )
+            }
         }
     }
 
@@ -205,13 +227,20 @@ class GameViewModel : ViewModel() {
 
     fun resetRound() {
         val currentState = _gameState.value
-        val playerStarts = !currentState.playerStartedLastRound
+        val newRoundCount = currentState.roundCount + 1
+
+        // Alternate who starts each round for fairness (matching JS logic exactly)
+        val playerStarts = if (newRoundCount % 2 == 0) {
+            !currentState.playerStartedLastRound
+        } else {
+            currentState.playerStartedLastRound
+        }
 
         _gameState.update {
             GameState(
                 playerScore = it.playerScore,
                 aiScore = it.aiScore,
-                roundCount = it.roundCount + 1,
+                roundCount = newRoundCount,
                 playerStartedLastRound = playerStarts,
                 isPlayerTurn = playerStarts,
                 statusMessage = if (playerStarts) "Your Turn (X)" else "AI's Turn (O)"

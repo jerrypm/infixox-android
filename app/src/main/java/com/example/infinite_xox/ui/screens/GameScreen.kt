@@ -68,16 +68,10 @@ fun GameScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Infinite",
+                    text = "InfiXOX",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Bold,
                     color = TextPrimary
-                )
-                Text(
-                    text = "Tic-Tac-Toe",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = TextSecondary
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

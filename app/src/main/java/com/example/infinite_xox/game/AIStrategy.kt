@@ -79,15 +79,23 @@ class AIStrategy {
         val availableCorners = GameConstants.CORNERS.filter { availableMoves.contains(it) }
         if (availableCorners.isEmpty()) return null
 
-        // Prefer opposite corner to player
+        // Prioritize corners that are opposite to player's pieces
+        val strategicCorners = mutableListOf<Int>()
+        val playerCorners = GameConstants.CORNERS.filter { board[it] == CellState.X }
+
         for (corner in availableCorners) {
             val oppositeCorner = getOppositeCorner(corner)
-            if (board[oppositeCorner] == CellState.X) {
-                return corner
+            if (playerCorners.contains(oppositeCorner)) {
+                strategicCorners.add(corner)
             }
         }
 
-        return availableCorners.firstOrNull()
+        // Return random from strategic corners if any, otherwise random from available corners
+        return if (strategicCorners.isNotEmpty()) {
+            strategicCorners.random()
+        } else {
+            availableCorners.random()
+        }
     }
 
     private fun getOppositeCorner(corner: Int): Int {

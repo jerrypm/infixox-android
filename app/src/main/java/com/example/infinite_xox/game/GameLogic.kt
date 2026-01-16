@@ -31,31 +31,9 @@ class GameLogic {
     }
 
     fun isDraw(board: List<CellState>, moveHistory: List<Move>): Boolean {
-        val playerPieces = countSymbols(board, CellState.X)
-        val aiPieces = countSymbols(board, CellState.O)
-        val emptyCount = countSymbols(board, CellState.EMPTY)
-
-        if (playerPieces < GameConstants.MAX_PIECES || aiPieces < GameConstants.MAX_PIECES) {
-            return false
-        }
-
-        if (emptyCount != 3) return false
-
-        return !canAnyoneWin(board)
-    }
-
-    private fun canAnyoneWin(board: List<CellState>): Boolean {
-        val availableMoves = getAvailableMoves(board)
-
-        for (symbol in listOf(CellState.X, CellState.O)) {
-            for (move in availableMoves) {
-                val testBoard = board.toMutableList()
-                testBoard[move] = symbol
-                if (checkWinner(testBoard, symbol) != null) {
-                    return true
-                }
-            }
-        }
+        // In infinite tic-tac-toe, draws are extremely rare
+        // Since pieces can be moved, we should almost never declare a draw
+        // Matching JavaScript logic: always return false to prevent unwanted resets
         return false
     }
 }

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "infinite-xox"
+rootProject.name = "infixox"
 include(":app")
  
